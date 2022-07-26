@@ -1,0 +1,121 @@
+.slider {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    &__text {
+        position: absolute;
+        bottom: calc(2rem + 3vw);
+        left: calc(2rem + 3vw);
+        z-index: 10;
+        font-size: calc(1rem + 4vw);
+        text-transform: uppercase;
+        transform-origin: top;
+        line-height: 1.075;
+        color: #fff;
+        font-weight: 500;
+
+        &-line {
+            overflow: hidden;
+        }
+    }
+
+    &__inner {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    &__nav {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        z-index: 10;
+    }
+
+    &-bullet {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+
+        &__text {
+            color: #fff;
+            font-size: 0.65rem;
+            margin-right: 1rem;
+        }
+
+        &__line {
+            background-color: #fff;
+            height: 1px;
+            width: 1rem;
+        }
+    }
+
+    canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
+}
+#pagination {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 30px;
+    z-index: 6;
+
+    button {
+        display: block;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border: 0;
+        width: 16px;
+        height: 16px;
+        background-color: #ffffff;
+        border-radius: 100%;
+        padding: 0;
+        margin: 30px 0;
+        cursor: pointer;
+        position: relative;
+        opacity: 0.2;
+        transition: opacity 0.2s ease-in-out;
+        outline: none;
+
+        &:hover {
+            opacity: 0.5;
+        }
+
+        &.active {
+            opacity: 1;
+
+            &:before {
+                width: 300%;
+                height: 300%;
+                opacity: 1;
+            }
+        }
+
+        &:before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, width 0.4s ease-in-out, height 0.4s ease-in-out;
+        }
+    }
+}
