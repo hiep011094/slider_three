@@ -14,13 +14,11 @@ class Sketch {
     this.debug = opts.debug || false;
     this.easing = opts.easing || "easeInOut";
 
-    this.clicker = document.querySelector(".c-slider");
-
-    this.container = document.querySelector(".c-slider");
-    this.images = JSON.parse(this.container.getAttribute("data-images"));
-    this.width = this.container.offsetWidth;
-    this.height = this.container.offsetHeight;
-    this.container.appendChild(this.renderer.domElement);
+    this.slider = document.querySelector(".c-slider");
+    this.images = JSON.parse(this.slider.getAttribute("data-images"));
+    this.width = this.slider.offsetWidth;
+    this.height = this.slider.offsetHeight;
+    this.slider.appendChild(this.renderer.domElement);
 
     this.camera = new THREE.PerspectiveCamera(
       70,
@@ -63,21 +61,6 @@ class Sketch {
     });
   }
 
-  pagination() {
-    const buttons = document.querySelector(".c-pagination");
-    let classActive = buttons.querySelectorAll(".active");
-    let length = buttons.children.length - 1;
-
-    classActive.forEach((el) => {
-      el.classList.remove("active");
-    });
-
-    let current = parseInt(classActive[0].dataset.slide);
-    if (current === length) current = -1;
-    buttons.querySelector(
-      "[data-slide='" + (current + 1).toString() + "']"
-    ).classList = "active";
-  }
   addEvents() {
     let pagButtons = Array.from(
       document.querySelector(".c-pagination").querySelectorAll("button")
@@ -96,8 +79,7 @@ class Sketch {
   }
 
   clickEvent() {
-    this.clicker.addEventListener("click", () => {
-      this.pagination();
+    this.slider.addEventListener("click", () => {
       this.next();
     });
   }
@@ -109,13 +91,16 @@ class Sketch {
   }
 
   scrollPlay() {
-    this.clicker.addEventListener(
+    this.slider.addEventListener(
       "wheel",
-      () => {
-        this.pagination();
-        this.next();
+      (event) => {
+        if (event.deltaY < 0) {
+          this.prev();
+        } else {
+          this.next();
+        }
       },
-      { passive: true }
+      true
     );
   }
 
@@ -132,7 +117,7 @@ class Sketch {
       )[0];
       next.click();
     };
-    window.setInterval(intervalAuto, 100000);
+    window.setInterval(intervalAuto, 5000);
     clearInterval(intervalAuto);
   }
 
@@ -141,8 +126,8 @@ class Sketch {
   }
 
   resize() {
-    this.width = this.container.offsetWidth;
-    this.height = this.container.offsetHeight;
+    this.width = this.slider.offsetWidth;
+    this.height = this.slider.offsetHeight;
     this.renderer.setSize(this.width, this.height);
     this.camera.aspect = this.width / this.height;
 
@@ -251,7 +236,56 @@ class Sketch {
         this.isRunning = false;
       },
     });
+    const buttons = document.querySelector(".c-pagination");
+    let classActive = buttons.querySelectorAll(".active");
+    let length = buttons.children.length - 1;
+
+    classActive.forEach((el) => {
+      el.classList.remove("active");
+    });
+
+    if (this.current === length) this.current = -1;
+    buttons.querySelector(
+      "[data-slide='" + (this.current + 1).toString() + "']"
+    ).classList = "active";
   }
+
+  prev() {
+    if (this.isRunning) return;
+    const buttons = document.querySelector(".c-pagination");
+    let classActive = buttons.querySelectorAll(".active");
+    let length = buttons.children.length - 1;
+
+    if (this.current === 0) {
+      this.current = length;
+    } else {
+      this.current = this.current - 1;
+    }
+    this.isRunning = true;
+    let len = this.textures.length;
+    let nextTexture = this.textures[this.current % len];
+    this.material.uniforms.texture2.value = nextTexture;
+    let tl = new TimelineMax();
+    tl.to(this.material.uniforms.progress, this.duration, {
+      value: 1,
+      ease: Power2[this.easing],
+      onComplete: () => {
+        this.current = this.current % len;
+        this.material.uniforms.texture1.value = nextTexture;
+        this.material.uniforms.progress.value = 0;
+        this.isRunning = false;
+      },
+    });
+
+    classActive.forEach((el) => {
+      el.classList.remove("active");
+    });
+
+    buttons.querySelector(
+      "[data-slide='" + this.current.toString() + "']"
+    ).classList = "active";
+  }
+
   render() {
     if (this.paused) return;
     this.time += 0.05;
