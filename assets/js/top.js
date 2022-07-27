@@ -23,7 +23,7 @@ const displacementSlider = function (opts) {
   
           void main() {
   
-              vec2 uv = vUv;
+              vec2 uv = (vUv - vec2(0.5))*resolution.zw + vec2(0.5);
               vec4 _currentImage;
               vec4 _nextImage;
   
