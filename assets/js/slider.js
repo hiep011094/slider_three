@@ -10,7 +10,7 @@ class Sketch {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0xeeeeee, 1);
-    this.duration = opts.duration || 1;
+    this.duration = opts.duration || 2.5;
     this.debug = opts.debug || false;
     this.easing = opts.easing || "easeInOut";
 
